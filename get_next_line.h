@@ -6,7 +6,7 @@
 /*   By: omatalla <omatalla@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 12:59:25 by omatalla          #+#    #+#             */
-/*   Updated: 2026/06/09 18:28:55 by omatalla         ###   ########.fr       */
+/*   Updated: 2026/06/09 19:04:54 by omatalla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,5 @@ void	*ft_memcpy(void *dest, const void *src, size_t n);
 char	*ft_strdup(const char *s1);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
 
 #endif
