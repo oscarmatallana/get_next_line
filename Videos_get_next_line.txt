@@ -1,0 +1,44 @@
+Video 1: How to Build GET_NEXT_LINE | 42 School Full Tutorial
+
+https://www.youtube.com/watch?v=qsomkTmFQkA
+
+1. The Challenge
+
+2. The Soup and Spoon
+
+3. The Power of Static
+
+4. The Mental Algorithm
+
+- Read bytes (Read BUFFER_SIZE bytes)
+- Append (Append to the stash)
+- Extract (Extract line if newline is found)
+- Save (Save the leftover data)
+
+5. Errors and Leaks
+
+- Return value > 0 means the number of bytes read
+- Return value = 0 means the end of file (EOF) has been reached
+- Return value < 0 (-1) means error
+- memory leaks
+- losing stash data
+- Mishandling EOF
+- Reading whole file
+
+6. Multiple Descriptors
+
+- Using an array: static char *stash[1024]; 
+
+7. Professional Concepts:
+
+- Stream processing
+- Networking sockets
+- Data parsers
+- Incremental reading
+
+
+Video 2: Get Next Line 42 | Part 1
+
+https://www.youtube.com/watch?v=kR4FyNzVDBE
+
+Description of a typical main for this project.

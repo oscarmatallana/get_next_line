@@ -1,0 +1,60 @@
+# Notes about get_next_line
+
+The purpose of the program is to return a line read from a file descriptor.
+
+## What is a File Descriptor?
+
+A file descriptor is typically a non-negative integer that uniquely identifies an open file within a process. 
+In Unix-like operating systems, including Linux, file descriptors are used to represent open files, devices, and other I/O resources. 
+The philosophy behind this concept is known as “everything is a file”. 
+In Unix, regular files, directories, sockets, pipes, and even hardware devices are all abstracted as file descriptors. 
+When a program interacts with these entities, it does so through file descriptors. 
+This uniformity simplifies the I/O operations and allows a consistent interface for various types of data sources and sinks.
+
+## Static vs. Non-Static Variables
+
+- Static variables have their memory allocated once when the program starts and persist until termination
+
+- Non-static variables have memory allocated each time the associated function is called and are released when the function concludes
+
+## What is a Buffer?
+
+A buffer is a temporary storage area that temporarily holds data during movement or processing.
+In our program, a static buffer is employed, allocated once and retained until the program concludes. 
+This allows the function to resume reading from where it left off in previous iterations.
+
+### Impacts of Buffer Size on Program Performance
+
+Primarily, the buffer size denotes the quantity of bytes the function extracts from the file descriptor in each iteration.
+
+- A small buffer size (e.g., 1 byte) results in each read operation fetching only one byte. This increases I/O operations, reducing efficiency due to associated overhead and complicating processing with multi-byte character encodings
+
+- A large buffer size, while efficient for reading extensive data in one go, may lead to excessive memory usage. This is especially true if lines are shorter than the buffer size, causing unused memory in the buffer to go to waste
+
+- A moderately sized buffer strikes a balance. It allows the function to read a substantial amount of data at once, minimizing I/O operations and reducing overhead. However, it is not so large as to waste memory when processing shorter lines
+
+Choosing a buffer size involves a trade-off between efficiency and memory usage. 
+A reasonable buffer size typically falls within the range of a few kilobytes, such as 1024 or 4096 bytes.
+
+## Understanding the “get NEXT line” concept
+
+- The function is designed to get the “next line” with each call
+
+- In the first call, the ‘line’ variable is initialized as NULL, while the “next line” is the actual first line in the text to be read
+
+- If you wish to get the second next line, concatenate the fragment of the line from the previous call  (whatever was before the \n character) with the bytes obtained in the current read operation
+
+- For obtaining the first next line, the ‘line’ variable is initialized as NULL and then updated with the bytes read
+
+- For subsequent next lines, it is initialized with the remainder of the last read call and updated with the sum of it and the newly read bytes.
+
+- In summary, the ‘line’ variable serves as a dynamic accumulator, ensuring that it captures the relevant portion of the content for each call, thus facilitating the retrieval of successive lines
+
+### Example:
+
+- 1st Pass: ‘\0’ + “Carole\nB”
+
+- 2nd Pass: “B” + “ia”
+
+## Source: 
+Get next line, @bbazaglia: https://medium.com/@beatrizbazaglia/get-next-line-3872eb3189e6

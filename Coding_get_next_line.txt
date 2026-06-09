@@ -1,0 +1,248 @@
+# Important concepts to code get_next_line (GNL)
+
+
+One should understand first:
+
+- The objective of the function
+
+- What problem the static variable solves
+
+- What data must survive between function calls
+
+- Exactly when reading should stop
+
+- How to split the work into small helper functions
+
+
+## Understand the Objective
+
+
+Imagine a file:
+
+Hello
+Hola
+42
+
+and:
+
+fd = open("test.txt", O_RDONLY);
+
+printf("%s", get_next_line(fd));
+printf("%s", get_next_line(fd));
+printf("%s", get_next_line(fd));
+printf("%s", get_next_line(fd));
+
+Expected:
+
+Hello
+Hola
+42
+(null)
+
+Each call returns exactly one line.
+
+The challenge:
+
+When BUFFER_SIZE is small, one call to read() may not contain a whole line.
+
+Example:
+
+Hello\nWorld\n
+
+BUFFER_SIZE = 3
+
+Reads:
+
+Hel
+lo\n
+Wor
+ld\n
+
+You must somehow remember unfinished data between calls.
+
+That is exactly why the project hints at a static variable.
+
+
+## Understand Static Variables
+
+
+Normal variable:
+
+char *buffer;
+
+disappears when the function ends.
+
+Static variable:
+
+static char *stash;
+
+survives.
+
+Example:
+
+int counter(void)
+{
+	static int n;
+
+	n++;
+	return (n);
+}
+
+Calls:
+
+counter(); // 1
+counter(); // 2
+counter(); // 3
+
+because n survives.
+
+For GNL:
+
+static char *stash;
+
+will store:
+
+unfinished data
+
+between calls.
+
+
+## Visualize the Stash
+
+
+Suppose:
+
+Hello\nWorld\n
+
+BUFFER_SIZE = 10
+
+First read:
+
+Hello\nWorl
+
+Store inside stash:
+
+Hello\nWorl
+
+Now:
+
+Extract line
+Hello\n
+Keep remainder
+Worl
+
+inside stash.
+
+Next call:
+
+read()
+
+gets:
+
+d\n
+
+append to stash:
+
+World\n
+
+return:
+
+World\n
+
+
+## What Must get_next_line Do?
+
+Every call should:
+
+A) Read until newline found
+or the end of file (EOF).
+
+B) Extract one line
+abc\nxyz
+
+returns:
+abc\n
+
+C) Save leftovers
+xyz
+for next call.
+
+
+## High-Level Architecture
+
+
+One can/should keep GNL very small:
+
+get_next_line()
+{
+	read_and_store();
+
+	line = extract_line();
+
+	update_stash();
+
+	return (line);
+}
+
+That's the entire project.
+
+Everything else goes into helper functions.
+
+
+## Code structure
+
+
+A clean GNL usually looks like this:
+
+
+get_next_line()
+│
+├── validate fd and BUFFER_SIZE
+│
+├── read_and_store()
+│   │
+│   ├── read()
+│   ├── append to stash
+│   └── stop when '\n' found or EOF
+│
+├── extract_line()
+│   │
+│   └── allocate and return next line
+│
+├── clean_stash()
+│   │
+│   └── keep everything after '\n'
+│
+└── return line
+
+
+And the typical files are:
+
+
+get_next_line.c
+│
+├── get_next_line()
+├── read_and_store()
+├── extract_line()
+└── clean_stash()
+
+get_next_line_utils.c
+│
+├── ft_strlen()
+├── ft_strdup()
+├── ft_strchr()
+├── ft_strjoin()
+└── ft_substr()   (optional)
+
+get_next_line.h
+│
+├── includes
+├── BUFFER_SIZE protection
+└── prototypes
+
+
+
+
+
+
+
