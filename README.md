@@ -216,6 +216,7 @@ Algorithm:
 
 Flow:
 
+``text
 line_container
 |
 v
@@ -229,6 +230,7 @@ append_buffer()
 |
 v
 line_container grows
+```
 
 The function never reads more than necessary to obtain the next line.
 
