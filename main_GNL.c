@@ -6,7 +6,7 @@
 /*   By: omatalla <omatalla@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:56:52 by omatalla          #+#    #+#             */
-/*   Updated: 2026/06/10 16:05:34 by omatalla         ###   ########.fr       */
+/*   Updated: 2026/06/10 16:09:44 by omatalla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,15 @@ int	main(void)
 	return (0);
 }
 /*List of files:
-A.txt
-About_get_next_line.txt
-An.txt
-AnBn.txt
-Coding_get_next_line.txt
-Empty.txt
-Everything_Emptiness_Poem.txt
-n.txt
-nnn.txt
-Random.txt
-Videos_get_next_line.txt
+1. A.txt
+2. About_get_next_line.txt
+3. An.txt
+4. AnBn.txt
+5. Coding_get_next_line.txt
+6. Empty.txt
+7. Everything_Emptiness_Poem.txt
+8. n.txt
+9. nnn.txt
+10. Random.txt
+11. Videos_get_next_line.txt
 */
