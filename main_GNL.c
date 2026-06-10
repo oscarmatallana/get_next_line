@@ -6,7 +6,7 @@
 /*   By: omatalla <omatalla@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:56:52 by omatalla          #+#    #+#             */
-/*   Updated: 2026/06/10 16:32:43 by omatalla         ###   ########.fr       */
+/*   Updated: 2026/06/10 16:57:30 by omatalla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	main(void)
 	int		fd;
 	char	*line;
 
-	fd = open("12. HW42.txt", O_RDONLY);
+	fd = open("07. Everything_Emptiness_Poem.txt", O_RDONLY);
 	if (fd < 0)
 		return (1);
 	line = get_next_line(fd);
@@ -30,7 +30,7 @@ int	main(void)
 		free(line);
 		line = get_next_line(fd);
 	}
-    printf("\n");
+	printf("\n");
 	close(fd);
 	return (0);
 }
