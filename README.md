@@ -596,7 +596,7 @@ All source code, implementation decisions, debugging, compilation, testing, and 
 
 Oscar Matallana
 
-42 Berlin — omatalla
+42 Berlin - omatalla
 
 Email: [omatalla@student.42berlin.de](mailto:omatalla@student.42berlin.de)
 
