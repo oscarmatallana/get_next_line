@@ -141,20 +141,7 @@ A static string called line_container stores all unread data between function ca
 
 Every call to get_next_line() follows the same sequence:
 
-File Descriptor
-|
-v
-read_and_store()
-|
-v
-line_container
-|
---> extract_line()
-|
---> update_line_container()
-|
-v
-Returned Line
+File Descriptor -> read_and_store() -> line_container --> extract_line() --> update_line_container() -> Returned Line
 
 ---
 
@@ -216,21 +203,8 @@ Algorithm:
 
 Flow:
 
-``text
-line_container
-|
-v
-read()
-|
-v
-buffer
-|
-v
-append_buffer()
-|
-v
-line_container grows
-```
+line_container -> read() -> buffer -> append_buffer() -> line_container grows
+
 
 The function never reads more than necessary to obtain the next line.
 
