@@ -1,0 +1,37 @@
+1. First: Test with Valgrind
+
+cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 \
+get_next_line.c get_next_line_utils.c Line_Counter.c
+
+valgrind --leak-check=full ./a.out "01. A"
+
+It should say: All heap blocks were freed -- no leaks are possible
+
+Repeat with:
+
+-D BUFFER_SIZE=1
+-D BUFFER_SIZE=10
+-D BUFFER_SIZE=9999
+
+2. Second: Tripouille's gnlTester
+
+git clone https://github.com/Tripouille/gnlTester.git
+
+cd gnlTester
+
+Copy the files:
+
+cp ../get_next_line.c .
+cp ../get_next_line_utils.c .
+cp ../get_next_line.h .
+
+And then run:
+
+make -j$(nproc) m
+
+or:
+
+make m
+
+
+
