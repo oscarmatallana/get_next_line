@@ -107,27 +107,27 @@ The project is organized around several helper functions responsible for specifi
 
 get_next_line.c
 
-── get_next_line()
+- get_next_line()
 
-── read_and_store()
+- read_and_store()
 
-── extract_line()
+- extract_line()
 
-── update_line_container()
+- update_line_container()
 
-── append_buffer()
+- append_buffer()
 
 get_next_line_utils.c
 
-── ft_strlen()
+- ft_strlen()
 
-── ft_memcpy()
+- ft_memcpy()
 
-── ft_strdup()
+- ft_strdup()
 
-── ft_strchr()
+- ft_strchr()
 
-── ft_strjoin()
+- ft_strjoin()
 
 ---
 
