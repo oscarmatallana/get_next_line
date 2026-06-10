@@ -6,7 +6,7 @@
 /*   By: omatalla <omatalla@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:56:52 by omatalla          #+#    #+#             */
-/*   Updated: 2026/06/10 16:23:45 by omatalla         ###   ########.fr       */
+/*   Updated: 2026/06/10 16:32:43 by omatalla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	main(void)
 	int		fd;
 	char	*line;
 
-	fd = open("02. About_get_next_line.txt", O_RDONLY);
+	fd = open("12. HW42.txt", O_RDONLY);
 	if (fd < 0)
 		return (1);
 	line = get_next_line(fd);
@@ -30,6 +30,7 @@ int	main(void)
 		free(line);
 		line = get_next_line(fd);
 	}
+    printf("\n");
 	close(fd);
 	return (0);
 }
@@ -45,4 +46,5 @@ int	main(void)
 09. nnn.txt
 10. Random.txt
 11. Videos_get_next_line.txt
+12. HW42.txt
 */
