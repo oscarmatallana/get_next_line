@@ -6,7 +6,7 @@
 /*   By: omatalla <omatalla@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:56:52 by omatalla          #+#    #+#             */
-/*   Updated: 2026/06/10 16:09:44 by omatalla         ###   ########.fr       */
+/*   Updated: 2026/06/10 16:23:45 by omatalla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	main(void)
 	int		fd;
 	char	*line;
 
-	fd = open("About_get_next_line.txt", O_RDONLY);
+	fd = open("02. About_get_next_line.txt", O_RDONLY);
 	if (fd < 0)
 		return (1);
 	line = get_next_line(fd);
@@ -34,15 +34,15 @@ int	main(void)
 	return (0);
 }
 /*List of files:
-1. A.txt
-2. About_get_next_line.txt
-3. An.txt
-4. AnBn.txt
-5. Coding_get_next_line.txt
-6. Empty.txt
-7. Everything_Emptiness_Poem.txt
-8. n.txt
-9. nnn.txt
+01. A.txt
+02. About_get_next_line.txt
+03. An.txt
+04. AnBn.txt
+05. Coding_get_next_line.txt
+06. Empty.txt
+07. Everything_Emptiness_Poem.txt
+08. n.txt
+09. nnn.txt
 10. Random.txt
 11. Videos_get_next_line.txt
 */
