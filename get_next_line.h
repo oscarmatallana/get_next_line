@@ -6,7 +6,7 @@
 /*   By: omatalla <omatalla@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 12:59:25 by omatalla          #+#    #+#             */
-/*   Updated: 2026/06/09 19:04:54 by omatalla         ###   ########.fr       */
+/*   Updated: 2026/06/10 12:14:56 by omatalla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ char	*get_next_line(int fd);
 
 /* get_next_line co-workers */
 char	*append_buffer(char *line_container, char *buffer);
-char	*free_all(char *buffer, char *line_container);
 char	*read_and_store(int fd, char *line_container);
 char	*extract_line(char *line_container);
 char	*update_line_container(char *line_container);
