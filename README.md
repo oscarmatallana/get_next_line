@@ -105,7 +105,7 @@ The project is organized around several helper functions responsible for specifi
 
 ## Project Structure
 
-get_next_line.c
+### get_next_line.c
 
 - get_next_line()
 
@@ -117,7 +117,7 @@ get_next_line.c
 
 - append_buffer()
 
-get_next_line_utils.c
+### get_next_line_utils.c
 
 - ft_strlen()
 
