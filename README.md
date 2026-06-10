@@ -560,9 +560,9 @@ man 3 malloc
 
 ### Books
 
-The C Programming Language — Brian Kernighan & Dennis Ritchie
+The C Programming Language - Brian Kernighan & Dennis Ritchie
 
-C Programming For Dummies — Dan Gookin
+C Programming For Dummies - Dan Gookin
 
 ### Useful References
 
