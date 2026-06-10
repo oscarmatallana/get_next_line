@@ -566,11 +566,11 @@ C Programming For Dummies — Dan Gookin
 
 ### Useful References
 
-https://en.cppreference.com/w/c/io/fread
+https://www.geeksforgeeks.org/c/static-variables-in-c/
 
 https://en.cppreference.com/w/c/memory
 
-https://pythontutor.com
+https://www.youtube.com/watch?v=qsomkTmFQkA
 
 ---
 
