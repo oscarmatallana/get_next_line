@@ -357,7 +357,7 @@ Each file continues exactly where the previous call stopped.
 
 The bonus part demonstrates an important software engineering principle:
 
-> Different resources often require independent state management.
+_Different resources often require independent state management._
 
 Instead of redesigning the entire algorithm, the solution simply changes where the state is stored.
 
