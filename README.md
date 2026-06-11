@@ -795,11 +795,11 @@ every call would start from scratch and the function would never know where it l
 That single variable is what allows get_next_line() to behave like a bookmark inside a file.
 
 
-## Bonus Part: Managing Multiple File Descriptors
+# Bonus Part: Managing Multiple File Descriptors
 
 The bonus part extends the original design by allowing get_next_line() to read from multiple file descriptors simultaneously without losing track of the reading state of any file.
 
-### The Problem
+## The Problem
 
 In the mandatory implementation, a single static variable is used to preserve unread data:
 
@@ -820,7 +820,7 @@ get_next_line(fd2);
 
 With only one static container, the unread data from one file descriptor would overwrite the unread data of another. The function would lose track of where each file was being read.
 
-### The Solution
+## The Solution
 
 The bonus implementation keeps the same overall algorithm but gives each file descriptor its own dedicated container:
 
@@ -838,7 +838,7 @@ fd 5 -> line_container[5]
 
 As a result, each file descriptor maintains its own independent reading state.
 
-### Example
+## Example
 
 Suppose two files contain:
 
@@ -863,7 +863,7 @@ get_next_line(fdB); // returns "42\n"
 
 Each file continues exactly where the previous call stopped.
 
-### Key Learning Points
+## Key Learning Points
 
 The bonus part demonstrates an important software engineering principle:
 
