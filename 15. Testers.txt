@@ -33,5 +33,7 @@ or:
 
 make m
 
+and make b for the bonus part.
 
+Good luck future Oscar, evaluator or user!
 
