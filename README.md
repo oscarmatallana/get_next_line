@@ -285,6 +285,94 @@ This preserves the state needed for the next call.
 
 ---
 
+## Bonus Part: Managing Multiple File Descriptors
+
+The bonus part extends the original design by allowing get_next_line() to read from multiple file descriptors simultaneously without losing track of the reading state of any file.
+
+### The Problem
+
+In the mandatory implementation, a single static variable is used to preserve unread data:
+
+```c
+static char *line_container;
+```
+
+This works perfectly when reading from only one file descriptor at a time.
+
+However, imagine the following sequence:
+
+```c
+get_next_line(fd1);
+get_next_line(fd2);
+get_next_line(fd1);
+get_next_line(fd2);
+```
+
+With only one static container, the unread data from one file descriptor would overwrite the unread data of another. The function would lose track of where each file was being read.
+
+### The Solution
+
+The bonus implementation keeps the same overall algorithm but gives each file descriptor its own dedicated container:
+
+```c
+static char *line_container[1024];
+```
+
+Each file descriptor stores its unread data in a separate position of the array:
+
+```text
+fd 3 -> line_container[3]
+fd 4 -> line_container[4]
+fd 5 -> line_container[5]
+```
+
+As a result, each file descriptor maintains its own independent reading state.
+
+### Example
+
+Suppose two files contain:
+
+```text
+File A:
+Hello
+World
+
+File B:
+Oscar
+42
+```
+
+The following sequence becomes possible:
+
+```c
+get_next_line(fdA); // returns "Hello\n"
+get_next_line(fdB); // returns "Oscar\n"
+get_next_line(fdA); // returns "World\n"
+get_next_line(fdB); // returns "42\n"
+```
+
+Each file continues exactly where the previous call stopped.
+
+### Key Learning Points
+
+The bonus part demonstrates an important software engineering principle:
+
+> Different resources often require independent state management.
+
+Instead of redesigning the entire algorithm, the solution simply changes where the state is stored.
+
+The helper functions remain unchanged because they already operate on the container passed as an argument. Only the ownership of the container changes.
+
+This bonus reinforced several important concepts:
+
+* Persistent state across function calls.
+* File descriptor management.
+* Scalable program design.
+* Separation of responsibilities between functions.
+* Reusing existing code by changing data structures rather than rewriting algorithms.
+
+Perhaps the most valuable lesson is that a small change in data organization can significantly increase the capabilities of a program while preserving the original logic.
+
 ## Memory Management Strategy
 
 Memory ownership is carefully controlled throughout the project.
