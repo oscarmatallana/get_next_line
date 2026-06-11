@@ -285,6 +285,515 @@ This preserves the state needed for the next call.
 
 ---
 
+# Following a Line Through the Program
+
+One of the best ways to understand get_next_line() is to follow the journey of the data as it moves through the program.
+
+Rather than thinking about individual functions, think about the life cycle of a line from the moment it exists in a file until it is returned to the caller.
+
+---
+
+## Big Picture
+
+When a user calls:
+
+```c
+line = get_next_line(fd);
+```
+
+the program performs three major tasks:
+
+1. Read enough data to guarantee that a complete line exists.
+2. Extract the next line to return.
+3. Preserve any remaining unread data for future calls.
+
+Visually:
+
+```text
+File
+ │
+ ▼
+read_and_store()
+ │
+ ▼
+line_container
+ │
+ ├── extract_line()
+ │         │
+ │         ▼
+ │    Returned Line
+ │
+ └── update_line_container()
+           │
+           ▼
+   Remaining Unread Data
+```
+
+The most important variable is:
+
+```c
+static char *line_container;
+```
+
+Everything revolves around it.
+
+---
+
+# Example File
+
+Suppose the file contains:
+
+```text
+Hello
+World
+42
+```
+
+Internally:
+
+```text
+Hello\nWorld\n42
+```
+
+Let's follow what happens.
+
+---
+
+# First Call
+
+User calls:
+
+```c
+get_next_line(fd);
+```
+
+Initially:
+
+```text
+line_container = NULL
+```
+
+---
+
+## Step 1: read_and_store()
+
+Since the container is NULL:
+
+```text
+line_container = ""
+```
+
+The function begins reading.
+
+Suppose:
+
+```text
+BUFFER_SIZE = 5
+```
+
+First read:
+
+```text
+buffer = "Hello"
+```
+
+Container becomes:
+
+```text
+line_container = "Hello"
+```
+
+No newline yet.
+
+Read again:
+
+```text
+buffer = "\nWorl"
+```
+
+Container becomes:
+
+```text
+line_container =
+"Hello\nWorl"
+```
+
+A newline has been found.
+
+Reading stops immediately.
+
+Current state:
+
+```text
+line_container
+│
+▼
+"Hello\nWorl"
+```
+
+---
+
+## Step 2: extract_line()
+
+Now we create the line that will be returned.
+
+Input:
+
+```text
+"Hello\nWorl"
+```
+
+The function finds:
+
+```text
+Hello\n
+```
+
+and allocates:
+
+```text
+line = "Hello\n"
+```
+
+Current state:
+
+```text
+line_container
+│
+▼
+"Hello\nWorl"
+
+returned line
+│
+▼
+"Hello\n"
+```
+
+---
+
+## Step 3: update_line_container()
+
+The returned line has been consumed.
+
+Only the unread part should remain.
+
+Before:
+
+```text
+"Hello\nWorl"
+```
+
+After:
+
+```text
+"Worl"
+```
+
+Current state:
+
+```text
+line_container
+│
+▼
+"Worl"
+```
+
+The function returns:
+
+```text
+"Hello\n"
+```
+
+to the user.
+
+---
+
+# Second Call
+
+User calls:
+
+```c
+get_next_line(fd);
+```
+
+again.
+
+Notice:
+
+```text
+line_container = "Worl"
+```
+
+The program remembers where it stopped.
+
+This is the purpose of the static variable.
+
+---
+
+## Step 1: read_and_store()
+
+Current container:
+
+```text
+"Worl"
+```
+
+Read:
+
+```text
+buffer = "d\n42"
+```
+
+Append:
+
+```text
+line_container =
+"World\n42"
+```
+
+A newline is found.
+
+Reading stops.
+
+---
+
+## Step 2: extract_line()
+
+Input:
+
+```text
+"World\n42"
+```
+
+Extract:
+
+```text
+"World\n"
+```
+
+---
+
+## Step 3: update_line_container()
+
+Before:
+
+```text
+"World\n42"
+```
+
+After:
+
+```text
+"42"
+```
+
+Current state:
+
+```text
+line_container
+│
+▼
+"42"
+```
+
+Returned:
+
+```text
+"World\n"
+```
+
+---
+
+# Third Call
+
+Current container:
+
+```text
+"42"
+```
+
+read_and_store() continues reading.
+
+The file has reached EOF.
+
+Container remains:
+
+```text
+"42"
+```
+
+extract_line() returns:
+
+```text
+"42"
+```
+
+update_line_container() discovers that no unread data remains:
+
+```text
+line_container = NULL
+```
+
+Returned:
+
+```text
+"42"
+```
+
+---
+
+# Fourth Call
+
+Current state:
+
+```text
+line_container = NULL
+```
+
+read_and_store() immediately reaches EOF.
+
+No line can be extracted.
+
+Result:
+
+```c
+NULL
+```
+
+The reading process is complete.
+
+---
+
+# The Evolution of line_container
+
+The easiest way to understand the project is to watch how line_container changes.
+
+```text
+Initial state
+NULL
+
+        ↓
+
+After first read
+"Hello\nWorl"
+
+        ↓
+
+After returning "Hello\n"
+"Worl"
+
+        ↓
+
+After second read
+"World\n42"
+
+        ↓
+
+After returning "World\n"
+"42"
+
+        ↓
+
+After returning "42"
+NULL
+```
+
+Notice that:
+
+```text
+line_container never stores
+already returned data.
+
+It only stores
+unread data.
+```
+
+This is the central idea of the entire project.
+
+---
+
+# The Role of Each Function
+
+Think of the project as a small team.
+
+### read_and_store()
+
+Responsibility:
+
+```text
+Make sure enough data exists
+to build a complete line.
+```
+
+---
+
+### extract_line()
+
+Responsibility:
+
+```text
+Create the line that will be
+returned to the caller.
+```
+
+---
+
+### update_line_container()
+
+Responsibility:
+
+```text
+Remove the returned line and
+preserve only unread data.
+```
+
+---
+
+### append_buffer()
+
+Responsibility:
+
+```text
+Grow the container safely
+after each read.
+```
+
+---
+
+### get_next_line()
+
+Responsibility:
+
+```text
+Coordinate the entire process.
+```
+
+It does not perform the work itself.
+
+It simply orchestrates the collaboration between the other functions.
+
+---
+
+# The Most Important Insight
+
+The project is not really about reading files.
+
+It is about managing state.
+
+The challenge is remembering what has already been returned and what still remains unread.
+
+The static variable solves this problem by preserving information between function calls.
+
+Without:
+
+```c
+static char *line_container;
+```
+
+every call would start from scratch and the function would never know where it left off.
+
+That single variable is what allows get_next_line() to behave like a bookmark inside a file.
+
 ## Bonus Part: Managing Multiple File Descriptors
 
 The bonus part extends the original design by allowing get_next_line() to read from multiple file descriptors simultaneously without losing track of the reading state of any file.
