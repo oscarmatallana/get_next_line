@@ -626,6 +626,8 @@ Tripouille gnlTester
 
 https://github.com/Tripouille/gnlTester
 
+https://github.com/RobertChesters/getnextline/blob/main/tester_gnl_rc.c
+
 ---
 
 ## Resources
