@@ -794,6 +794,7 @@ every call would start from scratch and the function would never know where it l
 
 That single variable is what allows get_next_line() to behave like a bookmark inside a file.
 
+
 ## Bonus Part: Managing Multiple File Descriptors
 
 The bonus part extends the original design by allowing get_next_line() to read from multiple file descriptors simultaneously without losing track of the reading state of any file.
