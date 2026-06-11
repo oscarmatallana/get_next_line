@@ -30,10 +30,10 @@ By reading this document carefully, you will understand that in a sense, the ent
 *get_next_line() is a state machine whose state is stored in line_container (or stash).* 
 
 Every function either:
-creates state
-modifies state
-uses state
-or destroys state
+- creates state
+- modifies state
+- uses state
+- or destroys state
 
 I hope this very detailed explanations are helpful to you, all the best!
 
