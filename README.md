@@ -25,6 +25,18 @@ The function must work with:
 
 The implementation must correctly preserve unread data between calls and avoid memory leaks.
 
+By reading this document carefully, you will understand that in a sense, the entire project can be summarized by a single sentence:
+
+*get_next_line() is a state machine whose state is stored in line_container (or stash).* 
+
+Every function either:
+creates state
+modifies state
+uses state
+or destroys state
+
+I hope this very detailed explanations are helpful to you, all the best!
+
 ---
 
 ## Project Goals
