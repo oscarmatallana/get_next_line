@@ -665,7 +665,7 @@ line_container
 
 # The Most Important Insight
 
-At tge beginning I thought the buffer stores the file.
+At the beginning I thought the buffer stores the file.
 
 It does not.
 
