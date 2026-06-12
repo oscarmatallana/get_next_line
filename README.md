@@ -295,6 +295,416 @@ World\n
 
 This preserves the state needed for the next call.
 
+# Understanding `read()` and the Buffer
+
+Before understanding how `get_next_line()` extracts lines, it is important to understand how data enters the program in the first place.
+
+The two key tools are:
+
+```c
+buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+```
+
+and
+
+```c
+bytes_read = read(fd, buffer, BUFFER_SIZE);
+```
+
+Together, they form the bridge between the file on disk and the data stored in memory.
+
+---
+
+# What is a Buffer?
+
+A buffer is simply a temporary storage area in memory.
+
+Think of it as a small bucket that temporarily holds data read from a file.
+
+```text
+File
+ │
+ ▼
+Buffer
+ │
+ ▼
+line_container
+```
+
+The buffer is not intended to store the entire file.
+
+Its job is only to hold the most recently read chunk of data.
+
+---
+
+# Creating the Buffer
+
+In my implementation:
+
+```c
+buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+```
+
+Suppose:
+
+```c
+BUFFER_SIZE = 5;
+```
+
+Then:
+
+```c
+malloc(6);
+```
+
+allocates memory for:
+
+```text
++---+---+---+---+---+---+
+| ? | ? | ? | ? | ? | ? |
++---+---+---+---+---+---+
+```
+
+Five positions are used for the characters read from the file.
+
+The extra position is reserved for:
+
+```c
+'\0'
+```
+
+which allows the buffer to behave like a normal C string.
+
+---
+
+# What Does `read()` Do?
+
+The prototype is:
+
+```c
+ssize_t read(int fd, void *buffer, size_t count);
+```
+
+Meaning:
+
+```text
+Read up to count bytes
+from fd
+and place them into buffer.
+```
+
+In my implementation:
+
+```c
+bytes_read = read(fd, buffer, BUFFER_SIZE);
+```
+
+Example:
+
+```text
+File:
+Hello
+World
+```
+
+with:
+
+```c
+BUFFER_SIZE = 5;
+```
+
+---
+
+# First Read
+
+```c
+bytes_read = read(fd, buffer, 5);
+```
+
+Result:
+
+```text
+buffer
+
++---+---+---+---+---+
+| H | e | l | l | o |
++---+---+---+---+---+
+```
+
+and:
+
+```c
+bytes_read == 5
+```
+
+meaning:
+
+```text
+Five bytes were successfully read.
+```
+
+---
+
+# Adding the Null Terminator
+
+Immediately afterwards:
+
+```c
+buffer[bytes_read] = '\0';
+```
+
+becomes:
+
+```text
++---+---+---+---+---+----+
+| H | e | l | l | o | \0 |
++---+---+---+---+---+----+
+```
+
+Now:
+
+```c
+buffer
+```
+
+can safely be used by string functions such as:
+
+```c
+ft_strjoin()
+ft_strlen()
+ft_strchr()
+```
+
+---
+
+# Second Read
+
+The file descriptor remembers its position automatically.
+
+The next call:
+
+```c
+bytes_read = read(fd, buffer, 5);
+```
+
+does not start at the beginning again.
+
+Instead:
+
+```text
+buffer
+
++---+---+---+---+---+
+| \n| W | o | r | l |
++---+---+---+---+---+
+```
+
+The file descriptor has advanced.
+
+This behavior is one of the most important concepts in the project.
+
+```text
+read()
+does not forget
+where it stopped.
+```
+
+---
+
+# What Does `bytes_read` Mean?
+
+The return value of `read()` tells us what happened.
+
+### Positive Number
+
+```c
+bytes_read = 5;
+```
+
+means:
+
+```text
+Five bytes were successfully read.
+```
+
+---
+
+### Zero
+
+```c
+bytes_read = 0;
+```
+
+means:
+
+```text
+End Of File (EOF)
+```
+
+No more data remains to be read.
+
+---
+
+### Negative Number
+
+```c
+bytes_read = -1;
+```
+
+means:
+
+```text
+An error occurred.
+```
+
+This is why the code checks:
+
+```c
+if (bytes_read < 0)
+```
+
+before continuing.
+
+---
+
+# Why Not Read the Entire File?
+
+The subject explicitly requires that we read only as much as necessary.
+
+Suppose:
+
+```text
+File:
+Hello
+World
+42
+```
+
+When the first newline is found:
+
+```text
+Hello\n
+```
+
+we already have enough information to return the first line.
+
+Reading the rest of the file immediately would waste memory and violate the spirit of the project.
+
+Instead:
+
+```text
+read()
+      ↓
+buffer
+      ↓
+line_container
+      ↓
+newline found
+      ↓
+stop reading
+```
+
+The remaining content will be processed during future calls to `get_next_line()`.
+
+---
+
+# How the Buffer and `line_container` Work Together
+
+The buffer is temporary.
+
+The container is persistent.
+
+```text
+buffer
+  │
+  │ read()
+  ▼
+
+"Hello"
+
+  │
+  │ append_buffer()
+  ▼
+
+line_container
+
+"Hello"
+```
+
+Next read:
+
+```text
+buffer
+
+"\nWorl"
+```
+
+After appending:
+
+```text
+line_container
+
+"Hello\nWorl"
+```
+
+The buffer may be reused or destroyed.
+
+The container survives.
+
+This is the key difference:
+
+```text
+buffer
+    = temporary storage
+
+line_container
+    = persistent unread data
+```
+
+---
+
+# The Most Important Insight
+
+At tge beginning I thought the buffer stores the file.
+
+It does not.
+
+The buffer only stores the most recently read chunk of data.
+
+The true state of the program lives inside:
+
+```c
+static char *line_container;
+```
+
+The buffer is simply a temporary messenger that transports data from the file descriptor to the container.
+
+```text
+File
+ │
+ ▼
+read()
+ │
+ ▼
+buffer
+ │
+ ▼
+append_buffer()
+ │
+ ▼
+line_container
+ │
+ ▼
+extract_line()
+ │
+ ▼
+Returned Line
+```
+
+Understanding this distinction is one of the key learning objectives of the entire get_next_line project.
+
+_The buffer is a temporary messenger. The container is the memory of the program. The functions I wrote manipulate that memory (or state) with each call._
+
 ---
 
 # Following a Line Through the Program
