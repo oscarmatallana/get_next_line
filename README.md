@@ -35,7 +35,7 @@ Every function either:
 - uses state
 - or destroys state
 
-I hope this very detailed explanations are helpful to you, all the best!
+I hope these very detailed explanations are helpful to you, all the best!
 
 ---
 
